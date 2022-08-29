@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.yaml": "ansible",
+        "*.yml": "ansible"
+    },
+    "ansible.executionEnvironment.enabled": false
+}
