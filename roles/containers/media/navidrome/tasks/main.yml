@@ -1,0 +1,17 @@
+---
+- name: Make sure the Navidrome container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "deluan/navidrome:develop"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    env:
+      "ND_SCANSCHEDULE": "1h"
+      "ND_LOGLEVEL": "info"
+      "ND_SESSIONTIMEOUT": "24h"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/data"
+      - "{{ mergerfs_root }}/samba/media/Music:/music:ro"
+    restart_policy: unless-stopped

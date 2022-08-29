@@ -1,0 +1,43 @@
+---
+- name: Create a SWAG network
+  docker_network:
+      name: swag_network 
+- name: Create the DNS conf folder
+  become: yes
+  file:
+      path: '{{ docker_home }}/swag/dns-conf'
+      state: directory
+      recurse: yes
+      mode: 0755
+
+- name: Install the DNS config file
+  become: yes
+  template:
+      src: 'cloudflare.ini.j2'
+      dest: '{{ docker_home }}/swag/dns-conf/cloudflare.ini'
+      mode: 0644
+
+- name: Make sure the swag container is created and running
+  docker_container:
+      name: '{{ container_name }}'
+      image: 'ghcr.io/linuxserver/swag'
+      pull: yes
+      networks:
+          - name: swag_network
+      capabilities:
+          - net_admin
+      state: 'started'
+      ports:
+        - "443:443"
+      env:
+          'PUID': '{{ guid }}'
+          'PGID': '{{ guid }}'
+          'TZ': '{{ timezone }}'
+          'URL': '{{ domain }}'
+          'SUBDOMAINS': 'wildcard'
+          'VALIDATION': 'dns'
+          'DNSPLUGIN': 'cloudflare'
+          'EMAIL': '{{ cf_email }}'
+      volumes:
+          - '{{ docker_home }}/swag:/config'
+      restart_policy: unless-stopped

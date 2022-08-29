@@ -1,0 +1,28 @@
+---
+- name: Chown the repo
+  file:
+      path: '/home/{{ username }}/dots'
+      recurse: yes
+      state: directory
+      owner: '{{ username }}'
+      group: '{{ username }}'
+
+- name: Clone the latest dotfiles repo
+  become_user: '{{ username }}'
+  git:
+      repo: '{{ dotfiles_repo }}'
+      dest: '/home/{{ username }}/dots'
+      recursive: no
+      force: yes
+  notify:
+      - install and update nvim plugins
+
+- name: Stow the dotfiles
+  become_user: '{{ username }}'
+  shell:
+      cmd: stow -v fish neofetch nvim ranger mc
+      chdir: '/home/{{ username }}/dots'
+  register: stow_result
+  notify:
+      - install and update nvim plugins
+  changed_when: stow_result.stdout != ""

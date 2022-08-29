@@ -1,0 +1,6 @@
+---
+- name: Install required system packages
+  apt:
+    name: mergerfs
+    state: present
+    update_cache: yes

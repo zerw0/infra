@@ -1,0 +1,17 @@
+---
+- name: Make sure the Sonarr container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "ghcr.io/linuxserver/sonarr:develop"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+      "PUID": "{{ guid }}"
+      "PGID": "{{ guid }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/config"
+      - "{{ mergerfs_root}}/samba/media:/data"
+    restart_policy: unless-stopped

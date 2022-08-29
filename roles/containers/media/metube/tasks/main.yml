@@ -1,0 +1,12 @@
+---
+- name: Make sure the MeTube container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "alexta69/metube"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    volumes:
+      - "{{ mergerfs_root}}/samba/media/YouTube:/downloads"
+    restart_policy: unless-stopped

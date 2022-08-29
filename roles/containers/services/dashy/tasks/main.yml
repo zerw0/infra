@@ -1,0 +1,12 @@
+---
+- name: Make sure the Dashy container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "lissy93/dashy:latest"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/app/public"
+    restart_policy: unless-stopped

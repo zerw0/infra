@@ -1,0 +1,21 @@
+---
+- name: Make sure the Netboot container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "lscr.io/linuxserver/netbootxyz:latest"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    env:
+      "PUID": "{{ guid }}"
+      "PGID": "{{ guid }}"
+      "PORT_RANGE": "30000:30010"
+      "SUBFOLDER": "/"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/config"
+      - "{{ mergerfs_root}}/samba/images:/assets"
+    ports:
+            - "69:69/udp"
+            - "8085:80"
+    restart_policy: unless-stopped

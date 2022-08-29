@@ -1,0 +1,45 @@
+---
+- name: Create a vaultwarden network
+  docker_network:
+    name: vaultwarden_network
+
+- name: Make sure the Postgres container is created and running
+  docker_container:
+    name: "vaultwarden-postgres"
+    image: "postgres:13.6"
+    pull: yes
+    networks:
+      - name: swag_network
+      - name: vaultwarden_network
+    state: "started"
+    env:
+      "POSTGRES_USER": "{{ postgres_user }}"
+      "POSTGRES_PASSWORD": "{{ postgres_password }}"
+      "POSTGRES_DB": "{{ postgres_db }}"
+    volumes:
+      - "{{ docker_home }}/vaultwarden-postgres:/var/lib/postgresql/data"
+    restart_policy: unless-stopped
+
+- name: Make sure the Vaultwarden container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "vaultwarden/server:latest"
+    pull: yes
+    networks:
+      - name: swag_network
+      - name: vaultwarden_network
+    state: "started"
+    env:
+      "WEBSOCKET_ENABLED": "true"
+      "DATABASE_URL": "{{ vaultwarden_database }}"
+      "SIGNUPS_ALLOWED": "false"
+      "DOMAIN": "{{ vaultwarden_url }}"
+      "TZ": "{{ timezone }}"
+      "SHOW_PASSWORD_HINT": "false"
+      "INVITATIONS_ALLOWED": "false"
+      "ADMIN_TOKEN": "{{ vaultwarden_token }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/data"
+    restart_policy: unless-stopped
+
+

@@ -1,0 +1,19 @@
+---
+- name: Make sure the Scrutiny container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "ghcr.io/analogj/scrutiny:master-omnibus"
+    pull: yes
+    capabilities:
+      - SYS_RAWIO
+    networks:
+      - name: swag_network
+    state: "started"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}/config:/opt/scrutiny/config"
+      - "{{ docker_home }}/{{ container_name }}/influxdb:/opt/scrutiny/influxdb"
+    devices:
+      - "/dev/sda"
+      - "/dev/sdb"
+      - "/dev/sdc"
+    restart_policy: unless-stopped

@@ -1,0 +1,14 @@
+---
+- name: Make sure the Gotify container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "gotify/server"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/app/data"
+    restart_policy: unless-stopped

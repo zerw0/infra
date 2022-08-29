@@ -1,0 +1,16 @@
+---
+- name: Make sure the ps3netsrv container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "shawly/ps3netsrv"
+    pull: yes
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+      "USER_ID": "{{ guid }}"
+      "GROUP_ID": "{{ guid }}"
+    volumes:
+      - "{{ mergerfs_root }}/samba/games:/games:rw"
+    ports:
+      - "38008:38008"
+    restart_policy: unless-stopped

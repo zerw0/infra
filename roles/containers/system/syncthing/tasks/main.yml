@@ -1,0 +1,21 @@
+---
+- name: Make sure the Syncthing container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "ghcr.io/linuxserver/syncthing"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+      "PUID": "{{ guid }}"
+      "PGID": "{{ guid }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/config"
+      - "{{ mergerfs_root}}/samba/main:/data"
+    ports:
+      - "22000:22000/tcp"
+      - "22000:22000/udp"
+      - "21027:21027/udp"
+    restart_policy: unless-stopped

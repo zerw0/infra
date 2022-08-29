@@ -1,0 +1,26 @@
+---
+- name: Create a ps2 network
+  docker_network:
+    name: ps2
+    driver: macvlan
+    ipam_config:
+      - subnet: '10.0.1.0/24'
+        gateway: '10.0.1.1'
+
+- name: Make sure the ps2smb container is created and running
+  ignore_errors: true
+  docker_container:
+    name: "{{ container_name }}"
+    image: "fortu/ps2smb"
+    networks:
+      - name: ps2
+        ipv4_address: '10.0.1.12'
+    pull: yes
+    state: "started"
+    volumes:
+      - "{{ mergerfs_root }}/samba/games/PS2:/mnt/games"
+      - "{{ docker_home }}/ps2smb/smb.conf:/etc/samba/smb.conf"
+    ports:
+      - "445:445/tcp"
+    
+    restart_policy: unless-stopped

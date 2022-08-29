@@ -1,0 +1,61 @@
+---
+- name: Create a nextcloud network
+  docker_network:
+      name: nextcloud_network
+
+- name: Make sure the MariaDB container is created and running
+  docker_container:
+      name: 'nextcloud-mariadb'
+      image: 'ghcr.io/linuxserver/mariadb'
+      pull: yes
+      networks:
+        - name: swag_network
+        - name: nextcloud_network
+      state: 'started'
+      env:
+           'MYSQL_ROOT_PASSWORD': '{{ mysql_root_password }}'
+           'MYSQL_DATABASE': '{{ mysql_db }}'
+           'MYSQL_USER': '{{ mysql_user }}'
+           'MYSQL_PASSWORD': '{{ mysql_password }}'
+      volumes: 
+        - '{{ docker_home }}/nextcloud-mariadb:/config'
+      restart_policy: unless-stopped
+
+- name: Make sure the Redis container is created and running
+  docker_container:
+      name: 'nextcloud-redis'
+      networks:
+          - name: nextcloud_network
+      image: 'redis:alpine'
+      pull: yes
+      state: 'started'
+      restart_policy: unless-stopped
+
+- name: Make sure the Nextcloud container is created and running
+  docker_container:
+      name: '{{ container_name }}'
+      image: 'ghcr.io/linuxserver/nextcloud:php8'
+      pull: yes
+      networks:
+        - name: swag_network
+        - name: nextcloud_network
+      state: 'started'
+      env:
+          "PUID": "{{ guid }}"
+          "PGID": "{{ guid }}"
+          "TZ": "{{ timezone }}"
+          "MYSQL_DATABASE": "{{ mysql_db }}"
+          "MYSQL_USER": "{{ mysql_user }}"
+          "MYSQL_PASSWORD": "{{ mysql_password }}"
+          "MYSQL_HOST": "nextcloud-mariadb"
+      volumes:
+              - '{{ docker_home }}/{{ container_name }}:/config'
+              - '{{ mergerfs_root }}/nextcloud:/data/'
+      restart_policy: unless-stopped
+
+- name: Schedule a Nextcloud library scan at midnight every day
+  cron:
+      name: Scan the Nextcloud library
+      hour: '0'
+      minute: '0'
+      job: 'docker exec nextcloud sudo -u abc php8 /config/www/nextcloud/occ files:scan --all'

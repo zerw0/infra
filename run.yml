@@ -1,0 +1,291 @@
+---
+#
+# Tasks and roles
+#
+- hosts: homeserver
+  become: yes
+
+  pre_tasks: 
+    - import_tasks: tasks/ssh_juggle_port.yaml
+      tags:
+        - port
+
+  vars:
+    pip_install_packages:
+      - name: docker
+
+# Basic Roles
+  roles:
+    - role: geerlingguy.pip
+      tags:
+        - pip
+
+    - role: neovim
+      tags:
+        - neovim
+
+    - role: geerlingguy.docker  
+      tags:
+        - docker
+
+    - role: geerlingguy.ntp 
+      tags:
+        - ntp
+
+    - role: stuvusit.smartd
+      tags:
+        - smartd
+
+    - role: linux-system-roles.cockpit
+      tags:
+        - cockpit
+      when: enable_cockpit | default(False)
+
+    - role: system
+      tags: 
+        - system
+
+    - role: oefenweb.dns
+      tags:
+        - dns
+
+    # Security
+    - role: geerlingguy.security
+      tags:
+        - security
+
+    - role: security/endlessh
+      tags:
+        - security
+        - endlessh
+      when: enable_endlessh | default(False)
+
+## Services: 
+    - role: containers/services/vaultwarden
+      become: no
+      tags:
+        - vaultwarden
+        - containers
+      when: enable_vaultwarden | default(False)
+
+    - role: containers/services/nextcloud
+      become: no
+      tags:
+        - nextcloud
+        - containers
+      when: enable_nextcloud | default(False)
+
+
+    - role: containers/services/kavita
+      become: no
+      tags:
+        - kavita
+        - containers 
+      when: enable_kavita | default(False)
+
+    - role: containers/services/flame
+      become: no
+      tags:
+        - flame
+        - containers
+      when: enable_flame | default(False)
+
+    - role: containers/services/dashy
+      become: no
+      tags: 
+        - dashy
+        - containers
+      when: enable_dashy | default(False)
+
+## System:
+    - role: containers/system/prowlarr
+      become: no
+      tags:
+        - prowlarr
+        - containers
+      when: enable_prowlarr | default(False)
+
+    - role: containers/system/watchtower
+      become: no  
+      tags:
+        - watchtower
+        - containers
+      when: enable_watchtower | default(False)
+
+    - role: containers/system/duplicati
+      become: no
+      tags:
+        - duplicati
+        - containers
+      when: enable_duplicati | default(False)
+
+    - role: containers/system/syncthing
+      become: no
+      tags:
+        - syncthing
+        - containers
+      when: enable_syncthing | default(False)
+
+    - role: containers/system/netbootxyz
+      become: no
+      tags:
+        - netbootxyz
+        - containers
+      when: enable_netbootxyz | default(False)
+
+## Media:
+    - role: containers/media/sonarr
+      become: no
+      tags:
+        - sonarr
+        - containers
+      when: enable_sonarr | default(False)
+
+    - role: containers/media/deluge
+      become: no
+      tags:
+        - deluge
+        - containers
+      when: enable_deluge | default(False)
+
+    - role: containers/media/radarr
+      become: no
+      tags:
+        - radarr
+        - containers
+      when: enable_radarr | default(False)
+
+    - role: containers/media/jellyfin
+      become: no
+      tags:
+        - jellyfin
+        - containers
+      when: enable_jellyfin | default(False)
+
+    - role: containers/media/metube
+      become: no
+      tags:
+        - metube
+        - containers
+      when: enable_metube | default(False)
+
+    - role: containers/media/navidrome
+      become: no
+      tags:
+        - navidrome
+        - containers
+      when: enable_navidrome | default(False)
+
+    - role: containers/media/bazarr
+      become: no
+      tags:
+        - bazarr
+        - media
+      when: enable_bazarr | default(False)
+
+## Monitoring:
+    - role: containers/monitoring/gotify
+      become: no
+      tags:
+        - gotify
+        - containers
+        - monitoring
+      when: enable_gotify | default(False)
+
+    - role: containers/monitoring/scrutiny
+      become: no
+      tags:
+        - scrutiny
+        - containers
+        - monitoring
+      when: enable_scrutiny | default(False)
+
+    - role: containers/monitoring/grafana
+      become: no
+      tags:
+        - grafana
+        - monitoring
+        - containers
+      when: enable_grafana | default(False)
+    
+    - role: containers/monitoring/prometheus
+      become: no
+      tags:
+        - prometheus
+        - monitoring
+        - containers
+      when: enable_prometheus | default(False)
+
+    - role: geerlingguy.node_exporter
+      tags:
+        - node_exporter
+        - monitoring
+        - containers
+      when: enable_node_exporter | default(False)
+
+
+## Network:
+    - role: network/swag
+      become: no
+      tags:
+        - swag
+        - containers
+      when: enable_swag | default(False)
+
+    - role: network/wireguard
+      become: no
+      tags:
+        - wireguard
+        - containers
+      when: enable_wireguard | default(False)
+
+## Games:
+    - role: containers/games/ps3netsrv
+      become: no
+      tags:
+        - ps3netsrv
+        - containers
+      when: enable_ps3netsrv | default(False)
+
+    - role: containers/games/ps2smb
+      become: no
+      tags:
+        - ps2smb
+        - containers
+      when: enable_ps2smb | default(False)
+
+## NAS Stuff
+    - role: filesystems/mergerfs
+      become: yes
+      tags: 
+        - mergerfs
+        - disks
+      when: enable_nas | default(False)
+
+    - role: filesystems/mounts
+      become: yes
+      tags:
+        - mounts
+        - disks
+      when: enable_nas | default(False)
+
+    - role: filesystems/hd-idle
+      become: yes
+      tags:
+        - hd-idle
+        - disks
+      when: enable_hdidle | default(False)
+
+    - role: bertvv.samba
+      become: yes
+      tags:
+        - samba
+      when: enable_samba | default(False)
+
+# Home Automation
+    - role: containers/homeautomation/homeassistant
+      become: no
+      tags: 
+        - homeassistant
+        - containers
+      when: enable_homeassistant | default(False)

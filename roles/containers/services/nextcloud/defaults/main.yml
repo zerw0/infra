@@ -1,0 +1,3 @@
+container_name: nextcloud
+mysql_db: "nextcloud"
+mysql_user: "nextcloud"

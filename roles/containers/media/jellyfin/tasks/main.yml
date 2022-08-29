@@ -1,0 +1,16 @@
+---
+- name: Make sure the Jellyfin container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "ghcr.io/linuxserver/jellyfin"
+    pull: yes
+    network_mode: host
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+      "PUID": "{{ guid }}"
+      "PGID": "{{ guid }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/config"
+      - "{{ mergerfs_root}}/samba/media:/data"
+    restart_policy: unless-stopped

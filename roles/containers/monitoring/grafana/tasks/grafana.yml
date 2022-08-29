@@ -1,0 +1,29 @@
+---
+- name: Create a grafana network
+  docker_network:
+      name: grafana_network
+
+- name: Create and chmod Grafana folder
+  become: yes
+  file:
+    path: "{{ docker_home }}/{{ container_name }}"
+    owner: 472
+    group: 0
+    state: directory
+    recurse: yes
+
+- name: Make sure the Grafana container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "grafana/grafana:main"
+    pull: yes
+    networks:
+      - name: swag_network
+      - name: grafana_network
+    state: 'started'
+    user: "472"
+    env:
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}/data:/var/lib/grafana"
+    restart_policy: unless-stopped

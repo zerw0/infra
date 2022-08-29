@@ -1,0 +1,16 @@
+---
+- name: Make sure the Prowlarr container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "lscr.io/linuxserver/prowlarr:develop"
+    pull: yes
+    networks:
+      - name: swag_network
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+      "PUID": "{{ guid }}"
+      "PGID": "{{ guid }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/config"
+    restart_policy: unless-stopped

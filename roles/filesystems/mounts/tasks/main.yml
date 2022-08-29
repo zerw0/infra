@@ -1,0 +1,21 @@
+---
+- name: Mount the data drives
+  mount:
+    name: "{{ item.path }}"
+    src: "{{ item.src }}"
+    fstype: ext4
+    state: mounted
+    passno: "2"
+    boot: yes
+  with_items: "{{ disks }}"
+  when: disks[0] is defined
+
+- name: Mount the mergerfs array
+  mount:
+    name: "{{ mergerfs_root }}"
+    src: /mnt/disk*
+    opts: defaults,nonempty,allow_other,use_ino,moveonenospc=true,category.create=mfs,dropcacheonclose=true,minfreespace=100G,fsname=mergerfs
+    fstype: fuse.mergerfs
+    state: mounted
+    boot: yes
+  when: disks[0] is defined

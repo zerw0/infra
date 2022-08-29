@@ -1,0 +1,10 @@
+roles:
+    - name: geerlingguy.docker
+    - name: geerlingguy.pip
+    - name: geerlingguy.ntp
+    - name: stuvusit.smartd
+    - name: linux-system-roles.cockpit
+    - name: geerlingguy.node_exporter
+    - name: bertvv.samba
+    - name: oefenweb.dns
+    - name: geerlingguy.security
