@@ -2,4 +2,5 @@ secret.yml
 /hosts
 /group_vars/all/vars.yml
 /group_vars/all/secret.yml
-/host_vars/
+/host_vars/zenit/vars.yml
+/host_vars/zenit/secret.yml
