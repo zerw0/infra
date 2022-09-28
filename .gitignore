@@ -1,3 +1,2 @@
-secret.yml
-vars.yml
 /hosts
+/host_vars
