@@ -2,3 +2,4 @@ secret.yml
 /hosts
 /group_vars/all/vars.yml
 /group_vars/all/secret.yml
+/host_vars/
