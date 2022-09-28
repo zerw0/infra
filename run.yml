@@ -35,6 +35,7 @@
     - role: stuvusit.smartd
       tags:
         - smartd
+      when: enable_smartd | default(False)
 
     - role: linux-system-roles.cockpit
       tags:

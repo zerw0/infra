@@ -1,0 +1,171 @@
+# Docker stuff
+docker_install_compose: true
+docker_home: "/opt/docker/data"
+
+# Network
+lan_network: "10.0.1.0/24"
+dns_nameservers: ['10.0.1.1']
+deluge_nameservers: ['1.1.1.1', '1.0.0.1']
+
+# System
+guid: '1000'
+timezone: 'Europe/Sofia'
+hostname: '{{ inventory_hostname }}'
+username: zerw
+shell: /usr/bin/fish
+dotfiles_repo: "https://github.com/zerw0/dots"
+
+# Swag
+domain: 'chopapi.xyz'
+email: 'me@zerw.xyz'
+cf_email: 'important@zerw.xyz'
+
+# Wireguard
+wireguard_dns: "10.0.1.1"
+wireguard_host: "vpn.chopapi.xyz"
+
+# Vaultwarden
+vaultwarden_url: "https://bw.chopapi.xyz"
+
+# Databases
+postgres_db: "bitwarden"
+postgres_user: "bitwarden"
+
+# NTPD
+ntp_timezone: '{{ timezone }}'
+
+# Smartd email
+mail_recipients: '{{ email }}'
+
+# Locale
+locale: en_US.UTF-8
+
+# Security
+security_ssh_port: 8888
+security_sudoers_passwordless: ['{{ username }}']
+security_autoupdate_reboot: true
+security_autoupdate_mail_to: '{{ email }}'
+security_autoupdate_reboot_time: '03:00'
+security_autoupdate_mail_on_error: false
+security_ssh_permit_root_login: "no"
+
+security_fail2ban_enabled: true 
+enable_endlessh: true
+
+# NAS Stuff
+mergerfs_root: /mnt/storage
+enable_nas: true
+enable_hdidle: true
+spindown_time: 600
+
+disks:
+        - { path: /mnt/disk1, src: /dev/disk/by-uuid/90b30d2f-2ac8-4606-bd5e-f936ee4dec05, content: true }
+        - { path: /mnt/disk2, src: /dev/disk/by-uuid/a937736f-c4de-4125-9df6-8e56799ab8d1, content: true }
+
+# Samba
+enable_samba: true
+samba_server_string: '{{ hostname }}'
+samba_global_include: global-include.conf
+samba_mitigate_cve_2017_7494: false
+samba_server_max_protocol: 'SMB3'
+samba_server_min_protocol: 'SMB3'
+
+samba_shares:
+    - name: main
+      guest_ok: no
+      public: no
+      read_only: no
+      writable: yes
+      owner: '{{ username }}'
+      browseable: yes
+      path: '{{ mergerfs_root }}/samba/main'
+      valid_users: '{{ username }}'
+      write_list: '{{ username }}'
+
+    - name: media
+      guest_ok: no
+      public: no
+      read_only: no
+      writable: yes
+      owner: '{{ username }}'
+      browseable: yes
+      path: '{{ mergerfs_root }}/samba/media'
+      valid_users: '{{ username }}'
+      write_list: '{{ username }}'
+
+    - name: images
+      guest_ok: no
+      public: no
+      read_only: no
+      writable: yes
+      owner: '{{ username }}'
+      browseable: yes
+      path: '{{ mergerfs_root }}/samba/images'
+      valid_users: '{{ username }}'
+      write_list: '{{ username }}'
+
+    - name: games
+      guest_ok: no
+      public: no
+      read_only: no
+      writable: yes
+      owner: '{{ username }}'
+      browseable: yes
+      path: '{{ mergerfs_root }}/samba/games'
+      valid_users: '{{ username }}'
+      write_list: '{{ username }}'
+
+# Packages
+extra_packages:
+    - fish
+    - htop
+    - exa
+    - fd-find
+    - bat
+    - mc
+    - ranger
+
+# Services
+enable_vaultwarden: true
+enable_nextcloud: true
+enable_kavita: false
+enable_flame: true
+
+# System
+enable_prowlarr: true
+enable_watchtower: true
+enable_duplicati: true
+enable_syncthing: true
+enable_netbootxyz: false
+enable_starship: true
+
+# Cockpit
+enable_cockpit: true
+cockpit_started: yes
+
+# Media
+enable_sonarr: true
+enable_deluge: true
+enable_radarr: true
+enable_jellyfin: true
+enable_metube: false
+enable_navidrome: true
+enable_bazarr: true
+
+# Monitoring
+enable_gotify: true
+enable_scrutiny: true
+enable_prometheus: true
+enable_grafana: true
+enable_node_exporter: true
+
+# Network
+enable_swag: true
+enable_wireguard: true
+
+# Games
+enable_ps3netsrv: true
+enable_ps2smb: true
+
+# Home Automation
+enable_homeassistant: false

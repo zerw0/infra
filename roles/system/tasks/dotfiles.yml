@@ -26,3 +26,4 @@
   notify:
       - install and update nvim plugins
   changed_when: stow_result.stdout != ""
+  ignore_errors: true

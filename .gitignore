@@ -1,5 +1,4 @@
 secret.yml
 /hosts
-/group_vars/
-!/group_vars/all/example-vars.yml
-!/group_vars/all/example-secret.yml
+/group_vars/all/vars.yml
+/group_vars/all/secret.yml
