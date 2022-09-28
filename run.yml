@@ -192,6 +192,14 @@
         - containers
         - monitoring
       when: enable_gotify | default(False)
+    
+    - role: containers/monitoring/ntfy
+      become: no
+      tags:
+        - ntfy
+        - containers
+        - monitoring
+      when: enable_ntfy | default(False)
 
     - role: containers/monitoring/scrutiny
       become: no

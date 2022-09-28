@@ -1,0 +1,16 @@
+---
+- name: Make sure the ntfy container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "binwiederhier/ntfy"
+    command: "serve"
+    pull: yes
+    env:
+      "TZ": "{{ timezone }}"
+    networks:
+      - name: swag_network
+    state: "started"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}/etc:/etc/ntfy"
+      - "{{ docker_home }}/{{ container_name }}/cache:/var/cache/ntfy"
+    restart_policy: unless-stopped
