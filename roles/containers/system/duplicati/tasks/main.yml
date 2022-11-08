@@ -4,15 +4,18 @@
     name: "{{ container_name }}"
     image: "ghcr.io/linuxserver/duplicati"
     pull: yes
+    user: 0:0
     networks:
       - name: swag_network
     state: "started"
     env:
       "TZ": "{{ timezone }}"
-      "PUID": "{{ guid }}"
-      "PGID": "{{ guid }}"
+      #"PUID": "{{ guid }}"
+      #"PGID": "{{ guid }}"
     volumes:
       - "{{ docker_home }}/{{ container_name }}:/config"
+      - "{{ mergerfs_root }}:/storage"
       - "{{ docker_home }}/vaultwarden:/source/bitwarden:ro"
       - "{{ docker_home }}/vaultwarden-postgres:/source/psql:ro"
+      - "/home/zerw/.ssh/storage:/root/.ssh/storage"
     restart_policy: unless-stopped

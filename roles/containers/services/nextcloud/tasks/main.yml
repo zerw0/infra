@@ -34,7 +34,7 @@
 - name: Make sure the Nextcloud container is created and running
   docker_container:
       name: '{{ container_name }}'
-      image: 'ghcr.io/linuxserver/nextcloud:php8'
+      image: 'ghcr.io/linuxserver/nextcloud:latest'
       pull: yes
       networks:
         - name: swag_network

@@ -1,0 +1,15 @@
+---
+- name: Make sure the Recyclarr container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: "ghcr.io/recyclarr/recyclarr"
+    pull: yes
+    user: "1000:1000"
+    networks:
+      - name: swag_network
+    state: "started"
+    env:
+      "TZ": "{{ timezone }}"
+    volumes:
+      - "{{ docker_home }}/{{ container_name }}:/config"
+    restart_policy: unless-stopped

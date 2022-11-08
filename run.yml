@@ -181,8 +181,16 @@
       become: no
       tags:
         - bazarr
-        - media
+        - containers
       when: enable_bazarr | default(False)
+
+    - role: containers/media/recyclarr
+      become: no
+      tags:
+        - recyclarr
+        - containers
+      when: enable_recyclarr | default(False)
+
 
 ## Monitoring:
     - role: containers/monitoring/gotify
